@@ -1,0 +1,139 @@
+@page
+@model DemoDatabaseCompare.Web.Pages.StudentsModel
+@{
+    ViewData["Title"] = "Student List";
+}
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f4f6f8;
+        margin: 0;
+        padding: 0;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-top: 30px;
+    }
+    .student-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    button {
+        background: #1976d2;
+        color: #fff;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.2s;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    }
+    button:hover {
+        background: #1565c0;
+    }
+    #studentsTable {
+        margin: 0 auto;
+        border-collapse: collapse;
+        width: 90%;
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    #studentsTable th, #studentsTable td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+    }
+    #studentsTable th {
+        background: #1976d2;
+        color: #fff;
+        font-weight: 600;
+    }
+    #studentsTable tr:hover {
+        background: #f1f8ff;
+    }
+</style>
+<h1>Student List</h1>
+<div class="student-actions">
+    <input id="studentCount" type="number" min="1" value="5" style="width:80px; padding:7px; font-size:16px; border-radius:5px; border:1px solid #ccc;">
+    <button id="generateBtn">Generate Students</button>
+    <button id="loadBtn">Load Students</button>
+</div>
+<div id="apiPerf" style="text-align:center; margin-bottom:20px;"></div>
+<div id="pagination" style="text-align:center; margin: 20px 0;">
+    <button id="prevPage" style="margin-right:10px;">Trang trước</button>
+    <span id="pageInfo"></span>
+    <button id="nextPage" style="margin-left:10px;">Trang sau</button>
+</div>
+<table id="studentsTable">
+    <thead>
+        <tr>
+            <th>StudentId</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>DateOfBirth</th>
+            <th>Grade</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+@section Scripts {
+<script>
+    let currentPage = 1;
+    const pageSize = 10;
+
+    document.getElementById('generateBtn').onclick = function() {
+        const count = document.getElementById('studentCount').value || 1;
+        fetch(`https://localhost:44332/api/students/generate/${count}`, {
+            method: 'GET'
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('apiPerf').innerHTML =
+                `<span style="display:inline-block;padding:10px 24px;background:#e3f2fd;border-radius:8px;color:#1565c0;font-size:18px;font-weight:500;box-shadow:0 2px 8px rgba(21,101,192,0.08);margin-top:10px;">Đã thêm <b>${data.count}</b> học sinh! Thời gian xử lý: <b>${data.elapsedMilliseconds} ms</b></span>`;
+            loadStudents(1);
+        });
+    };
+
+    document.getElementById('loadBtn').onclick = function() {
+        loadStudents(1);
+    };
+
+    function loadStudents(page = 1) {
+        fetch(`https://localhost:44332/api/students/read-paged?page=${page}&pageSize=${pageSize}`)
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.querySelector('#studentsTable tbody');
+                tbody.innerHTML = '';
+                data.data.forEach(student => {
+                    const row = `<tr>
+                        <td>${student.studentId}</td>
+                        <td>${student.firstName}</td>
+                        <td>${student.lastName}</td>
+                        <td>${new Date(student.dateOfBirth).toLocaleDateString()}</td>
+                        <td>${student.grade}</td>
+                        <td>${student.address}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+                document.getElementById('pageInfo').innerText = `Trang ${page}`;
+                document.getElementById('prevPage').disabled = page <= 1;
+                document.getElementById('nextPage').disabled = data.data.length < pageSize;
+                currentPage = page;
+            });
+    }
+
+    document.getElementById('prevPage').onclick = function() {
+        if (currentPage > 1) loadStudents(currentPage - 1);
+    };
+    document.getElementById('nextPage').onclick = function() {
+        loadStudents(currentPage + 1);
+    };
+
+    window.onload = () => loadStudents(1);
+</script>
+} 

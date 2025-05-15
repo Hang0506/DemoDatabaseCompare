@@ -7,5 +7,8 @@ namespace DemoDatabaseCompare.Students
     {
         Task<StudentDto> InsertAsync(StudentDto input);
         Task<List<StudentDto>> GetAllAsync(int count);
+        Task<List<StudentDto>> GetPagedAsync(int page, int pageSize);
+        Task<int> GetTotalCountAsync();
+        Task InsertManyAsync(List<StudentDto> inputs);
     }
 }

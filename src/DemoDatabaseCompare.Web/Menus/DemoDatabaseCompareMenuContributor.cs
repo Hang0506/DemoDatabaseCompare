@@ -34,6 +34,17 @@ public class DemoDatabaseCompareMenuContributor : IMenuContributor
             )
         );
 
+        context.Menu.Items.Insert(
+            1,
+            new ApplicationMenuItem(
+                DemoDatabaseCompareMenus.Students,
+                l["Menu:Students"],
+                "/Students",
+                icon: "fas fa-user-graduate",
+                order: 1
+            )
+        );
+
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);
