@@ -6,6 +6,10 @@ using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
+using Microsoft.Extensions.DependencyInjection;
+using DemoDatabaseCompare.Students; // or the correct namespace
+using DemoCompare.Cassandra.Services;
+using DemoCompare.Cassandra.Repositories;
 
 namespace DemoDatabaseCompare;
 
@@ -27,5 +31,6 @@ public class DemoDatabaseCompareApplicationModule : AbpModule
         {
             options.AddMaps<DemoDatabaseCompareApplicationModule>();
         });
+        context.Services.AddTransient<IStudentCassandraService, StudentCassandraService>();
     }
 }

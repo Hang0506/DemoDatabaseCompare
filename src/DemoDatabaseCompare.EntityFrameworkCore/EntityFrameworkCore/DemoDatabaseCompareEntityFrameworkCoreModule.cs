@@ -12,6 +12,7 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using DemoCompare.Cassandra.Repositories;
 
 namespace DemoDatabaseCompare.EntityFrameworkCore;
 
@@ -42,6 +43,7 @@ public class DemoDatabaseCompareEntityFrameworkCoreModule : AbpModule
                  * default repositories only for aggregate roots */
             options.AddDefaultRepositories(includeAllEntities: true);
         });
+        context.Services.AddTransient<IStudentCassandraRepository, StudentCassandraRepository>();
 
         Configure<AbpDbContextOptions>(options =>
         {

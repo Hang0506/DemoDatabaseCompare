@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using Cassandra;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
 
 namespace DemoDatabaseCompare.Web;
 
@@ -32,6 +35,24 @@ public class Program
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog();
+
+            builder.Services.Configure<CassandraSettings>(builder.Configuration.GetSection("Cassandra"));
+            builder.Services.AddSingleton<ICluster>(sp =>
+            {
+                var settings = sp.GetRequiredService<IOptions<CassandraSettings>>().Value;
+                return Cluster.Builder()
+                              .AddContactPoints(settings.ContactPoints)
+                              .WithPort(settings.Port)
+                              .Build();
+            });
+
+            builder.Services.AddSingleton<Cassandra.ISession>(sp =>
+            {
+                var settings = sp.GetRequiredService<IOptions<CassandraSettings>>().Value;
+                var cluster = sp.GetRequiredService<ICluster>();
+                return cluster.Connect(settings.Keyspace);
+            });
+
             await builder.AddApplicationAsync<DemoDatabaseCompareWebModule>();
             var app = builder.Build();
             await app.InitializeApplicationAsync();
