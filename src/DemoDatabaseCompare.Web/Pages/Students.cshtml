@@ -55,85 +55,260 @@
     #studentsTable tr:hover {
         background: #f1f8ff;
     }
+    .grid-container {
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+    .db-col {
+        flex: 1;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        padding: 20px;
+    }
+    .studentsTable th, .studentsTable td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    .stats-box {
+        background: #e3f2fd;
+        border-radius: 8px;
+        padding: 12px 18px;
+        margin-bottom: 12px;
+        color: #1565c0;
+        font-size: 15px;
+    }
+    .diff-row {
+        background-color: #ffe0e0 !important;
+    }
+    .same-row {
+        background-color: #e0ffe0 !important;
+    }
+    .actions-row, .pagination-row {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
 </style>
 <h1>Student List</h1>
-<div class="student-actions">
-    <input id="studentCount" type="number" min="1" value="5" style="width:80px; padding:7px; font-size:16px; border-radius:5px; border:1px solid #ccc;">
-    <button id="generateBtn">Generate Students</button>
-    <button id="loadBtn">Load Students</button>
+<div class="actions-row">
+    <input id="insertCount" type="number" min="1" value="5" style="width:80px;">
+    <button id="insertSqlBtn">Insert SQL Server</button>
+    <button id="insertCasBtn">Insert Cassandra</button>
+    <button id="searchSqlBtn">Search SQL Server</button>
+    <button id="searchCasBtn">Search Cassandra</button>
+    <button id="compareBtn">So sánh dữ liệu</button>
+    <label><input type="checkbox" id="showDiffOnly"> Chỉ hiển thị dòng khác biệt</label>
 </div>
-<div id="apiPerf" style="text-align:center; margin-bottom:20px;"></div>
-<div id="pagination" style="text-align:center; margin: 20px 0;">
-    <button id="prevPage" style="margin-right:10px;">Trang trước</button>
+<div class="grid-container">
+    <div class="db-col">
+        <h2>SQL Server</h2>
+        <div class="stats-box" id="sqlStats"></div>
+        <table id="sqlTable" class="studentsTable">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>StudentId</th>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>DateOfBirth</th>
+                    <th>Grade</th>
+                    <th>Address</th>
+                    <th>So sánh</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="db-col">
+        <h2>Cassandra</h2>
+        <div class="stats-box" id="casStats"></div>
+        <table id="casTable" class="studentsTable">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>StudentId</th>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>DateOfBirth</th>
+                    <th>Grade</th>
+                    <th>Address</th>
+                    <th>So sánh</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<div class="pagination-row">
+    <button id="prevPage">Trang trước</button>
     <span id="pageInfo"></span>
-    <button id="nextPage" style="margin-left:10px;">Trang sau</button>
+    <button id="nextPage">Trang sau</button>
 </div>
-<table id="studentsTable">
-    <thead>
-        <tr>
-            <th>StudentId</th>
-            <th>FirstName</th>
-            <th>LastName</th>
-            <th>DateOfBirth</th>
-            <th>Grade</th>
-            <th>Address</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
 @section Scripts {
 <script>
     let currentPage = 1;
     const pageSize = 10;
+    let sqlData = [];
+    let casData = [];
+    let sqlStats = {};
+    let casStats = {};
+    let diffRows = [];
 
-    document.getElementById('generateBtn').onclick = function() {
-        const count = document.getElementById('studentCount').value || 1;
-        fetch(`https://localhost:44332/api/students/generate/${count}`, {
-            method: 'GET'
-        })
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('apiPerf').innerHTML =
-                `<span style="display:inline-block;padding:10px 24px;background:#e3f2fd;border-radius:8px;color:#1565c0;font-size:18px;font-weight:500;box-shadow:0 2px 8px rgba(21,101,192,0.08);margin-top:10px;">Đã thêm <b>${data.count}</b> học sinh! Thời gian xử lý: <b>${data.elapsedMilliseconds} ms</b></span>`;
-            loadStudents(1);
+    function renderTable(tableId, data, compareArr, isSql) {
+        const tbody = document.querySelector(`#${tableId} tbody`);
+        tbody.innerHTML = '';
+        data.forEach((student, idx) => {
+            const stt = (currentPage - 1) * pageSize + idx + 1;
+            let compareCell = '';
+            let rowClass = '';
+            if (compareArr) {
+                if (!compareArr[idx]) {
+                    compareCell = '';
+                } else if (compareArr[idx] === 'diff') {
+                    compareCell = '<span style="color:red;font-size:18px;">❌</span>';
+                    rowClass = 'diff-row';
+                } else {
+                    compareCell = '<span style="color:green;font-size:18px;">✅</span>';
+                    rowClass = 'same-row';
+                }
+            }
+            const row = `<tr class="${rowClass}">
+                <td>${stt}</td>
+                <td>${student.studentId}</td>
+                <td>${student.firstName}</td>
+                <td>${student.lastName}</td>
+                <td>${new Date(student.dateOfBirth).toLocaleDateString()}</td>
+                <td>${student.grade}</td>
+                <td>${student.address}</td>
+                <td>${compareCell}</td>
+            </tr>`;
+            tbody.innerHTML += row;
         });
-    };
+    }
 
-    document.getElementById('loadBtn').onclick = function() {
-        loadStudents(1);
-    };
+    function updateStatsBox(statsId, stats, dbName) {
+        document.getElementById(statsId).innerHTML = `
+          <h3>Hiệu suất ${dbName}</h3>
+          <p>Insert: <b>${stats.insert || '-'}ms</b></p>
+          <p>Search: <b>${stats.search || '-'}ms</b></p>
+          <p>Số dòng: <b>${stats.total || '-'}</b></p>
+        `;
+    }
 
-    function loadStudents(page = 1) {
-        fetch(`https://localhost:44332/api/students/read-paged?page=${page}&pageSize=${pageSize}`)
+    function fetchSqlData() {
+        const t0 = performance.now();
+        return fetch(`https://localhost:44332/api/students/read-paged?page=${currentPage}&pageSize=${pageSize}`)
             .then(res => res.json())
             .then(data => {
-                const tbody = document.querySelector('#studentsTable tbody');
-                tbody.innerHTML = '';
-                data.data.forEach(student => {
-                    const row = `<tr>
-                        <td>${student.studentId}</td>
-                        <td>${student.firstName}</td>
-                        <td>${student.lastName}</td>
-                        <td>${new Date(student.dateOfBirth).toLocaleDateString()}</td>
-                        <td>${student.grade}</td>
-                        <td>${student.address}</td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-                document.getElementById('pageInfo').innerText = `Trang ${page}`;
-                document.getElementById('prevPage').disabled = page <= 1;
-                document.getElementById('nextPage').disabled = data.data.length < pageSize;
-                currentPage = page;
+                sqlData = data.data;
+                sqlStats.search = data.elapsedMilliseconds || Math.round(performance.now() - t0);
+                sqlStats.total = data.totalCount || sqlData.length;
+                updateStatsBox('sqlStats', sqlStats, 'SQL Server');
+            });
+    }
+    function fetchCasData() {
+        const t0 = performance.now();
+        return fetch(`https://localhost:44332/api/cassandra/students/paged?page=${currentPage}&pageSize=${pageSize}`)
+            .then(res => res.json())
+            .then(data => {
+                casData = Array.isArray(data) ? data : data.data;
+                casStats.search = Math.round(performance.now() - t0);
+                casStats.total = casData.length;
+                updateStatsBox('casStats', casStats, 'Cassandra');
             });
     }
 
-    document.getElementById('prevPage').onclick = function() {
-        if (currentPage > 1) loadStudents(currentPage - 1);
+    function loadBothTables() {
+        Promise.all([fetchSqlData(), fetchCasData()]).then(() => {
+            renderTable('sqlTable', sqlData);
+            renderTable('casTable', casData);
+            document.getElementById('pageInfo').innerText = `Trang ${currentPage}`;
+            document.getElementById('prevPage').disabled = currentPage <= 1;
+            document.getElementById('nextPage').disabled = sqlData.length < pageSize && casData.length < pageSize;
+            diffRows = [];
+        });
+    }
+
+    document.getElementById('insertSqlBtn').onclick = function() {
+        const count = document.getElementById('insertCount').value || 1;
+        const t0 = performance.now();
+            fetch(`https://localhost:44332/api/students/generate/${count}`, { method: 'GET' })
+            .then(res => res.json())
+            .then(data => {
+                sqlStats.insert = data.elapsedMilliseconds || Math.round(performance.now() - t0);
+                updateStatsBox('sqlStats', sqlStats, 'SQL Server');
+                loadBothTables();
+            });
     };
-    document.getElementById('nextPage').onclick = function() {
-        loadStudents(currentPage + 1);
+    document.getElementById('insertCasBtn').onclick = function() {
+        const count = document.getElementById('insertCount').value || 1;
+        const t0 = performance.now();
+        fetch(`https://localhost:44332/api/cassandra/students/generate/${count}`, { method: 'GET' })
+            .then(res => res.json())
+            .then(data => {
+                casStats.insert = data.elapsedMilliseconds || Math.round(performance.now() - t0);
+                updateStatsBox('casStats', casStats, 'Cassandra');
+                loadBothTables();
+            });
+    };
+    document.getElementById('searchSqlBtn').onclick = function() {
+        fetchSqlData().then(() => renderTable('sqlTable', sqlData));
+    };
+    document.getElementById('searchCasBtn').onclick = function() {
+        fetchCasData().then(() => renderTable('casTable', casData));
     };
 
-    window.onload = () => loadStudents(1);
+    document.getElementById('prevPage').onclick = function() {
+        if (currentPage > 1) {
+            currentPage--;
+            loadBothTables();
+        }
+    };
+    document.getElementById('nextPage').onclick = function() {
+        currentPage++;
+        loadBothTables();
+    };
+
+    document.getElementById('compareBtn').onclick = function() {
+        diffRows = [];
+        for (let i = 0; i < Math.max(sqlData.length, casData.length); i++) {
+            const s = sqlData[i], c = casData[i];
+            if (!s || !c) {
+                diffRows[i] = 'diff';
+            } else if (
+                s.studentId !== c.studentId ||
+                s.firstName !== c.firstName ||
+                s.lastName !== c.lastName ||
+                s.dateOfBirth !== c.dateOfBirth ||
+                s.grade !== c.grade ||
+                s.address !== c.address
+            ) {
+                diffRows[i] = 'diff';
+            } else {
+                diffRows[i] = 'same';
+            }
+        }
+        renderTable('sqlTable', sqlData, diffRows, true);
+        renderTable('casTable', casData, diffRows, false);
+    };
+
+    document.getElementById('showDiffOnly').onchange = function() {
+        if (!diffRows.length) return;
+        if (this.checked) {
+            const sqlFiltered = sqlData.filter((_, i) => diffRows[i] === 'diff');
+            const casFiltered = casData.filter((_, i) => diffRows[i] === 'diff');
+            renderTable('sqlTable', sqlFiltered, Array(sqlFiltered.length).fill('diff'), true);
+            renderTable('casTable', casFiltered, Array(casFiltered.length).fill('diff'), false);
+        } else {
+            renderTable('sqlTable', sqlData, diffRows, true);
+            renderTable('casTable', casData, diffRows, false);
+        }
+    };
+
+    window.onload = loadBothTables;
 </script>
 } 
