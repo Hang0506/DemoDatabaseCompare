@@ -37,11 +37,22 @@ public class DemoDatabaseCompareMenuContributor : IMenuContributor
         context.Menu.Items.Insert(
             1,
             new ApplicationMenuItem(
-                DemoDatabaseCompareMenus.Students,
-                l["Menu:Students"],
+                DemoDatabaseCompareMenus.Demo,
+                l["Menu:Demo"],
                 "/Students",
-                icon: "fas fa-user-graduate",
+                icon: "fas fa-laptop-code",
                 order: 1
+            )
+        );
+
+        context.Menu.Items.Insert(
+            2,
+            new ApplicationMenuItem(
+                DemoDatabaseCompareMenus.FAQ,
+                l["Menu:FAQ"],
+                "/FAQ",
+                icon: "fas fa-question-circle",
+                order: 2
             )
         );
 

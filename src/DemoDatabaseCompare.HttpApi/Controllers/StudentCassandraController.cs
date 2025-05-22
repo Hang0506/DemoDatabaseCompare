@@ -22,10 +22,10 @@ namespace DemoCompare.Cassandra.Controllers
 
       
         [HttpGet("generate/{count}")]
-        public async Task<IActionResult> Generate(int count)
+        public async ValueTask<IActionResult> Generate(int count)
         {
             var faker = new Faker<StudentCassandraDto>()
-                .RuleFor(s => s.StudentId, f => f.Random.AlphaNumeric(8).ToUpper()) // 👈 THÊM DÒNG NÀY
+                .RuleFor(s => s.StudentId, f => Guid.NewGuid())  // <-- Sinh Guid trực tiếp
                 .RuleFor(s => s.FirstName, f => f.Name.FirstName())
                 .RuleFor(s => s.LastName, f => f.Name.LastName())
                 .RuleFor(s => s.DateOfBirth, f => f.Date.Past(20, DateTime.Now.AddYears(-18)))
@@ -40,7 +40,7 @@ namespace DemoCompare.Cassandra.Controllers
             return Ok(new { Count = count, ElapsedMilliseconds = stopwatch.ElapsedMilliseconds });
         }
         [HttpGet("paged")]
-        public async Task<ActionResult<List<StudentCassandraDto>>> GetPagedAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async ValueTask<ActionResult<List<StudentCassandraDto>>> GetPagedAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var result = await _studentService.GetPagedAsync(page, pageSize);
             return Ok(result);

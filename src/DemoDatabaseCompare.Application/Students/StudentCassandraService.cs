@@ -17,14 +17,14 @@ namespace DemoCompare.Cassandra.Services
         {
             _repository = repository;
         }
-
-        public async Task InsertManyAsync(List<StudentCassandraDto> students)
+        
+        public async ValueTask InsertManyAsync(List<StudentCassandraDto> students)
         {
             var studentEntities = students.Select(student => new StudentCassandraEntity(student.StudentId, student.FirstName, student.LastName, student.DateOfBirth, student.Grade, student.Address)).ToList();
             await _repository.InsertManyAsync(studentEntities);
         }
 
-        public async Task<List<StudentCassandraDto>> GetPagedAsync(int page, int pageSize)
+        public async ValueTask<List<StudentCassandraDto>> GetPagedAsync(int page, int pageSize)
         {
             var studentEntities = await _repository.GetPagedAsync(page, pageSize);
             var studentDtos = studentEntities.Select(entity => new StudentCassandraDto {

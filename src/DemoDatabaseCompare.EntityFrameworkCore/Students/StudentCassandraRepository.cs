@@ -1,8 +1,6 @@
-﻿using System;
-using AutoMapper;
-using Cassandra;
-using Cassandra.Mapping;
+﻿using Cassandra;
 using DemoCompare.Cassandra.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,49 +20,77 @@ namespace DemoCompare.Cassandra.Repositories
             _mapper = new CassandraMapperImpl(_session);
         }
 
-            public async Task InsertManyAsync(List<StudentCassandraEntity> students)
+        private static IEnumerable<List<T>> ChunkBy<T>(List<T> source, int chunkSize)
+        {
+            for (int i = 0; i < source.Count; i += chunkSize)
+                yield return source.GetRange(i, Math.Min(chunkSize, source.Count - i));
+        }
+
+        public async ValueTask InsertManyAsync(List<StudentCassandraEntity> students)
+        {
+            const int batchSize = 100;
+
+            // Prepare statement 1 lần
+            var statement = _session.Prepare(
+                "INSERT INTO students (studentid, firstname, lastname, dateofbirth, grade, address) " +
+                "VALUES (?, ?, ?, ?, ?, ?)"
+            );
+
+            foreach (var batch in ChunkBy(students, batchSize))
             {
-                await Parallel.ForEachAsync(students, new ParallelOptions
+                var batchStatement = new BatchStatement();
+
+                foreach (var student in batch)
                 {
-                    MaxDegreeOfParallelism = Environment.ProcessorCount * 2
-                }, async (student, ct) =>
-                {
-                    await _mapper.InsertAsync(student);
-                });
-            }
+                    var bound = statement.Bind(
+                        student.StudentId,        // UUID
+                        student.FirstName,
+                        student.LastName,
+                        student.DateOfBirth,
+                        student.Grade,
+                        student.Address
+                    );
 
-            public async Task<List<StudentCassandraEntity>> GetPagedAsync(int page, int pageSize)
-            {
-                var cql = "SELECT * FROM students";
-
-                byte[] pagingState = null;
-                RowSet rs = null;
-
-                for (int i = 0; i <= page; i++)
-                {
-                    var statement = new SimpleStatement(cql).SetPageSize(pageSize);
-
-                    if (pagingState != null)
-                    {
-                        statement.SetPagingState(pagingState);
-                    }
-
-                    rs = await _session.ExecuteAsync(statement);
-                    pagingState = rs.PagingState;
+                    batchStatement.Add(bound);
                 }
 
-                var result = rs.Select(row => new StudentCassandraEntity
-                {
-                    StudentId = row.GetValue<string>("studentid"),
-                    FirstName = row.GetValue<string>("firstname"),
-                    LastName = row.GetValue<string>("lastname"),
-                    DateOfBirth = new DateTimeOffset(row.GetValue<DateTime>("dateofbirth")),
-                    Grade = row.GetValue<string>("grade"),
-                    Address = row.GetValue<string>("address")
-                }).ToList();
+                await _session.ExecuteAsync(batchStatement).ConfigureAwait(false);
+            }
+        }
 
-                return result;
+
+        public async ValueTask<List<StudentCassandraEntity>> GetPagedAsync(int page, int pageSize)
+        {
+            var cql = "SELECT * FROM students";
+
+            byte[] pagingState = null;
+            RowSet rs = null;
+
+            for (int i = 0; i <= page; i++)
+            {
+                var statement = new SimpleStatement(cql).SetPageSize(pageSize);
+
+                if (pagingState != null)
+                {
+                    statement.SetPagingState(pagingState);
+                }
+
+                rs = await _session.ExecuteAsync(statement);
+                pagingState = rs.PagingState;
             }
 
+            var result = rs.Select(row => new StudentCassandraEntity
+            {
+                StudentId = row.GetValue<Guid>("studentid"),
+                FirstName = row.GetValue<string>("firstname"),
+                LastName = row.GetValue<string>("lastname"),
+                DateOfBirth = new DateTimeOffset(row.GetValue<DateTime>("dateofbirth")),
+                Grade = row.GetValue<string>("grade"),
+                Address = row.GetValue<string>("address")
+            }).ToList();
+
+            return result;
+        }
+
     }
-} 
+}

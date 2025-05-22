@@ -9,7 +9,7 @@ namespace DemoCompare.Cassandra.Entities
     {
         [PartitionKey]
         [CassandraColumn("studentid")]
-        public string StudentId { get; set; }
+        public Guid StudentId { get; set; }
 
         [CassandraColumn("firstname")]
         public string FirstName { get; set; } = string.Empty;
@@ -28,7 +28,7 @@ namespace DemoCompare.Cassandra.Entities
 
         public StudentCassandraEntity() { }
 
-        public StudentCassandraEntity(string studentId, string firstName, string lastName, DateTimeOffset dateOfBirth, string grade, string address)
+        public StudentCassandraEntity(Guid studentId, string firstName, string lastName, DateTimeOffset dateOfBirth, string grade, string address)
         {
             StudentId = studentId;
             FirstName = firstName;

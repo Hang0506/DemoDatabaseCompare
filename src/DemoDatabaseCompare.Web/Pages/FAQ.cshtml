@@ -1,0 +1,562 @@
+@page
+@model DemoDatabaseCompare.Web.Pages.FAQModel
+@{
+    ViewData["Title"] = "FAQ & So sánh CSDL";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3"><i class="fas fa-database"></i> FAQ & So sánh CSDL</h2>
+    <p class="lead">Bảng so sánh chi tiết các hệ quản trị cơ sở dữ liệu phổ biến, giúp bạn lựa chọn công nghệ phù hợp</p>
+
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Tiêu chí</th>
+                    <th>MongoDB</th>
+                    <th>ScyllaDB</th>
+                    <th>Cassandra</th>
+                    <th>PostgreSQL</th>
+                    <th>SQL Server</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Loại DB</td>
+                    <td><span class="badge bg-info"><i class="fas fa-database"></i> NoSQL<br>Document</span></td>
+                    <td><span class="badge bg-info"><i class="fas fa-columns"></i> NoSQL<br>Wide Column</span></td>
+                    <td><span class="badge bg-info"><i class="fas fa-columns"></i> NoSQL<br>Wide Column</span></td>
+                    <td><span class="badge bg-primary"><i class="fas fa-table"></i> SQL<br>Relational</span></td>
+                    <td><span class="badge bg-primary"><i class="fas fa-table"></i> SQL<br>Relational</span></td>
+                </tr>
+                <tr>
+                    <td>Ngôn ngữ truy vấn</td>
+                    <td><i class="fas fa-code"></i> MongoQL (JSON)</td>
+                    <td><i class="fas fa-code"></i> CQL (SQL-like)</td>
+                    <td><i class="fas fa-code"></i> CQL</td>
+                    <td><i class="fas fa-code"></i> SQL chuẩn</td>
+                    <td><i class="fas fa-code"></i> SQL chuẩn</td>
+                </tr>
+                <tr>
+                    <td>Hiệu năng ghi (write)</td>
+                    <td><span class="text-success"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span><br><small>Tốt</small></td>
+                    <td><span class="text-success"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Xuất sắc</small></td>
+                    <td><span class="text-success"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span><br><small>Rất tốt</small></td>
+                    <td><span class="text-warning"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span><br><small>Trung bình - tốt</small></td>
+                    <td><span class="text-success"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span><br><small>Tốt</small></td>
+                </tr>
+                <tr>
+                    <td>Hiệu năng đọc (read)</td>
+                    <td><span class="text-success"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span><br><small>Linh hoạt</small></td>
+                    <td><span class="text-success"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span><br><small>Rất nhanh</small></td>
+                    <td><span class="text-success"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span><br><small>Tốt với key</small></td>
+                    <td><span class="text-success"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Rất mạnh</small></td>
+                    <td><span class="text-success"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Mạnh, full-text</small></td>
+                </tr>
+                <tr>
+                    <td>Khả năng mở rộng</td>
+                    <td><span class="text-success"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span><br><small>Dễ mở rộng</small></td>
+                    <td><span class="text-success"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Cực lớn</small></td>
+                    <td><span class="text-success"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Quy mô lớn</small></td>
+                    <td><span class="text-warning"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span><br><small>Giới hạn</small></td>
+                    <td><span class="text-warning"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span><br><small>Giới hạn</small></td>
+                </tr>
+                <tr>
+                    <td>Tính nhất quán</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> Strong (mặc định)</td>
+                    <td><span class="text-warning"><i class="fas fa-cogs"></i></span> Tuỳ chỉnh</td>
+                    <td><span class="text-warning"><i class="fas fa-cogs"></i></span> Tuỳ chỉnh</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> ACID</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> ACID</td>
+                </tr>
+                <tr>
+                    <td>Giao dịch (Transaction)</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> ACID, nhiều document</td>
+                    <td><span class="text-danger"><i class="fas fa-times-circle"></i></span> Hạn chế</td>
+                    <td><span class="text-danger"><i class="fas fa-times-circle"></i></span> Hạn chế</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> Full ACID</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> Full ACID</td>
+                </tr>
+                <tr>
+                    <td>Truy vấn linh hoạt</td>
+                    <td><span class="text-success"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span><br><small>Rất linh hoạt</small></td>
+                    <td><span class="text-warning"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span><br><small>Giới hạn</small></td>
+                    <td><span class="text-warning"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span><br><small>Giới hạn</small></td>
+                    <td><span class="text-success"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Join/filter mạnh</small></td>
+                    <td><span class="text-success"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Join/filter mạnh</small></td>
+                </tr>
+                <tr>
+                    <td>Hỗ trợ JSON/NoSQL</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> Native JSON</td>
+                    <td><span class="text-danger"><i class="fas fa-times-circle"></i></span> Không</td>
+                    <td><span class="text-danger"><i class="fas fa-times-circle"></i></span> Không</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> Có</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> Có</td>
+                </tr>
+                <tr>
+                    <td>Dễ học, phổ biến</td>
+                    <td><span class="text-success"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Rất phổ biến</small></td>
+                    <td><span class="text-warning"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span><br><small>Mới, cần học</small></td>
+                    <td><span class="text-warning"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span><br><small>Trung bình</small></td>
+                    <td><span class="text-success"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Rất phổ biến</small></td>
+                    <td><span class="text-success"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span><br><small>Phổ biến DN</small></td>
+                </tr>
+                <tr>
+                    <td>Open Source</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> Có (Community)</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> 100%</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> 100%</td>
+                    <td><span class="text-success"><i class="fas fa-check-circle"></i></span> Có</td>
+                    <td><span class="text-danger"><i class="fas fa-times-circle"></i></span> Có phí (Express)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Chú thích thuật ngữ dưới bảng so sánh -->
+    <div class="mb-4 small">
+        <b>Chú thích:</b><br>
+        <b>Open Source:</b> Phần mềm mã nguồn mở, ai cũng có thể truy cập, sử dụng và chỉnh sửa miễn phí.<br>
+        <b>Tính nhất quán:</b> Đảm bảo dữ liệu luôn đồng nhất và chính xác trên toàn hệ thống.<br>
+        <b>Mạnh, đặc biệt với full-text:</b> Khả năng tìm kiếm nhanh và chính xác trong toàn bộ văn bản dữ liệu.<br>
+        <b>ACID:</b> Bộ nguyên tắc đảm bảo giao dịch cơ sở dữ liệu an toàn và đáng tin cậy gồm Atomicity, Consistency, Isolation, Durability.<br>
+        <b>CQL:</b> Ngôn ngữ truy vấn giống SQL dùng để làm việc với cơ sở dữ liệu Cassandra.<br>
+        <b>Vertical Scaling:</b> Tăng sức mạnh máy chủ bằng cách nâng cấp phần cứng như CPU, RAM.<br>
+        <b>Wide Column:</b> Mô hình dữ liệu cho phép lưu trữ số lượng cột rất lớn, linh hoạt và tối ưu hiệu suất.<br>
+        <b>DBMS:</b> Hệ quản trị cơ sở dữ liệu, giúp lưu trữ, quản lý và truy xuất dữ liệu hiệu quả.<br>
+    </div>
+
+    <!-- So sánh chi tiết Cassandra vs ScyllaDB -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            🆚 So sánh chi tiết: Cassandra vs ScyllaDB
+        </div>
+        <div class="card-body">
+            <p>Cassandra và ScyllaDB là hai hệ quản trị cơ sở dữ liệu NoSQL phân tán, có cùng API và giao thức (ScyllaDB tương thích với Apache Cassandra), nhưng khác nhau rất rõ về kiến trúc và hiệu năng. Dưới đây là so sánh chi tiết giúp bạn thấy ScyllaDB khác Cassandra như thế nào:</p>
+            <h5 class="mt-3">🧬 1. Ngôn ngữ lập trình & Kiến trúc nội bộ</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tiêu chí</th>
+                            <th>Apache Cassandra</th>
+                            <th>ScyllaDB</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ngôn ngữ</td>
+                            <td>Java</td>
+                            <td>C++</td>
+                        </tr>
+                        <tr>
+                            <td>Kiến trúc</td>
+                            <td>Multi-threaded, mỗi thread xử lý nhiều tác vụ</td>
+                            <td>Thread-per-core: mỗi core xử lý riêng, không chia sẻ tài nguyên</td>
+                        </tr>
+                        <tr>
+                            <td>GC (Garbage Collection)</td>
+                            <td>Có thể gây pause và tăng độ trễ</td>
+                            <td>Không dùng GC nhờ C++ ⇒ latency thấp và ổn định</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mb-3"><b>👉 Kết quả:</b> ScyllaDB tối ưu CPU/RAM hơn, độ trễ thấp hơn, đặc biệt với workload lớn.</div>
+            <h5 class="mt-3">🚀 2. Hiệu năng và Độ trễ (Latency)</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tiêu chí</th>
+                            <th>Cassandra</th>
+                            <th>ScyllaDB</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Throughput</td>
+                            <td>Trung bình</td>
+                            <td>Gấp 3~10 lần Cassandra trên cùng phần cứng</td>
+                        </tr>
+                        <tr>
+                            <td>Latency (P99)</td>
+                            <td>Cao do GC và contention</td>
+                            <td>Rất thấp và ổn định</td>
+                        </tr>
+                        <tr>
+                            <td>Resource Usage</td>
+                            <td>Không tối ưu CPU</td>
+                            <td>Tối đa hóa hiệu suất phần cứng</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mb-3"><b>👉 Kết quả:</b> ScyllaDB có thể thay thế 3-10 node Cassandra bằng 1 node ScyllaDB trong nhiều trường hợp.</div>
+            <h5 class="mt-3">🛠️ 3. Khả năng mở rộng & quản trị</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tiêu chí</th>
+                            <th>Cassandra</th>
+                            <th>ScyllaDB</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Horizontal Scaling</td>
+                            <td>Có, nhưng cần nhiều tuning</td>
+                            <td>Có, auto-tuning, hỗ trợ scaling mượt</td>
+                        </tr>
+                        <tr>
+                            <td>Cluster Management</td>
+                            <td>Thủ công nhiều bước</td>
+                            <td>Có giao diện Scylla Manager, hỗ trợ backup, repair, monitoring dễ hơn</td>
+                        </tr>
+                        <tr>
+                            <td>Auto-Tuning</td>
+                            <td>Không có</td>
+                            <td>Tự điều chỉnh IO, compaction, cache...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h5 class="mt-3">📚 4. Tương thích & chuyển đổi</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tiêu chí</th>
+                            <th>Cassandra</th>
+                            <th>ScyllaDB</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>API (CQL)</td>
+                            <td>Chuẩn Cassandra</td>
+                            <td>100% tương thích với Cassandra</td>
+                        </tr>
+                        <tr>
+                            <td>Driver</td>
+                            <td>Dùng driver Cassandra</td>
+                            <td>Dùng lại driver Cassandra</td>
+                        </tr>
+                        <tr>
+                            <td>Chuyển đổi</td>
+                            <td>Không cần viết lại app</td>
+                            <td>Hỗ trợ công cụ chuyển dữ liệu từ Cassandra</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h5 class="mt-3">🔒 5. Tính ổn định và hỗ trợ</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tiêu chí</th>
+                            <th>Cassandra</th>
+                            <th>ScyllaDB</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Open-source</td>
+                            <td>Apache License</td>
+                            <td>Có bản open-source và bản enterprise</td>
+                        </tr>
+                        <tr>
+                            <td>Hỗ trợ</td>
+                            <td>Cộng đồng mạnh</td>
+                            <td>Hỗ trợ chuyên nghiệp từ ScyllaDB Inc</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h5 class="mt-3">✅ Kết luận</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Đặc điểm nổi bật</th>
+                            <th>Cassandra</th>
+                            <th>ScyllaDB</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Phổ biến, cộng đồng lớn</td>
+                            <td>✅</td>
+                            <td>❌</td>
+                        </tr>
+                        <tr>
+                            <td>Hiệu năng cao, latency thấp</td>
+                            <td>❌</td>
+                            <td>✅✅✅</td>
+                        </tr>
+                        <tr>
+                            <td>Tối ưu phần cứng (CPU/RAM)</td>
+                            <td>❌</td>
+                            <td>✅</td>
+                        </tr>
+                        <tr>
+                            <td>Dễ quản trị, auto-tune</td>
+                            <td>❌</td>
+                            <td>✅</td>
+                        </tr>
+                        <tr>
+                            <td>Thay thế Cassandra dễ dàng</td>
+                            <td>❌</td>
+                            <td>✅</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-info mt-3">
+                <b>👉 Bạn nên chọn ScyllaDB khi:</b>
+                <ul class="mb-0">
+                    <li>Hệ thống cần hiệu năng cực cao (real-time, IoT, streaming, finance, etc).</li>
+                    <li>Muốn tiết kiệm chi phí hạ tầng (ít server hơn).</li>
+                    <li>Cần latency thấp và ổn định trong các hệ thống phân tán lớn.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ứng dụng Cassandra/ScyllaDB trong hệ thống thực tế -->
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            🤖 Ứng Dụng Cassandra/ScyllaDB trong Hệ Thống Long Châu, FPTShop (.NET 8 + Microservice)
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Yêu cầu hệ thống</th>
+                        <th>Cassandra/ScyllaDB phù hợp?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ghi log giao dịch liên tục, truy vết đơn hàng</td>
+                        <td>✅ Rất phù hợp (write-heavy, scale tốt)</td>
+                    </tr>
+                    <tr>
+                        <td>Kiến trúc Microservice domain độc lập</td>
+                        <td>✅ Wide table phân vùng tự nhiên</td>
+                    </tr>
+                    <tr>
+                        <td>Khả năng mở rộng khi traffic tăng</td>
+                        <td>✅ Horizontal scaling mạnh</td>
+                    </tr>
+                    <tr>
+                        <td>Tích hợp .NET 8, APB Framework</td>
+                        <td>✅ Driver hỗ trợ, client đa dạng</td>
+                    </tr>
+                    <tr>
+                        <td>Phân tích dữ liệu lớn realtime hoặc batch</td>
+                        <td>🔄 Kết hợp Spark, Kafka để OLAP</td>
+                    </tr>
+                    <tr>
+                        <td>Yêu cầu giao dịch (bán nợ, bảo lãnh)</td>
+                        <td>❌ Hạn chế, xử lý nghiệp vụ tầng app</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Gợi ý các microservice nên dùng Cassandra/ScyllaDB -->
+    <div class="card mt-4">
+        <div class="card-header bg-success text-white">
+            💡 Gợi Ý Các Microservice Nên Dùng Cassandra/ScyllaDB
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Service / Module</th>
+                        <th>Ứng dụng & Lý do</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>📦 Tồn kho theo chi nhánh (Branch Stock)</td>
+                        <td>Truy xuất cực nhanh tồn kho theo SKU + chi nhánh. Cập nhật liên tục số lượng theo sự kiện bán/trả/nhập. Không cần join phức tạp.</td>
+                    </tr>
+                    <tr>
+                        <td>📍 Theo dõi trạng thái đơn hàng (Order State Timeline)</td>
+                        <td>Lưu trạng thái biến động đơn hàng, phục vụ UI timeline. Wide table theo OrderId. Ghi nhiều, đọc nhanh.</td>
+                    </tr>
+                    <tr>
+                        <td>📱 Lịch sử thao tác giỏ hàng (Cart History)</td>
+                        <td>Ghi nhận nhiều thao tác thêm/sửa/xóa sản phẩm, dữ liệu lớn nhưng không cần transaction phức tạp.</td>
+                    </tr>
+                    <tr>
+                        <td>🧮 Kiểm kê kho định kỳ (Stock Check Snapshot)</td>
+                        <td>Lưu snapshot số lượng thực tế từng đợt, truy xuất theo thời điểm nhanh, phù hợp time-series.</td>
+                    </tr>
+                    <tr>
+                        <td>🔄 Đồng bộ dữ liệu chéo hệ thống (Sync Service)</td>
+                        <td>Lưu trạng thái đồng bộ với ERP, nhà cung cấp, write-heavy, không yêu cầu transaction chặt.</td>
+                    </tr>
+                    <tr>
+                        <td>🏷️ Lịch sử thay đổi giá (Price History)</td>
+                        <td>Ghi nhận mỗi lần thay đổi giá bán theo SKU/Store/Thời gian, phục vụ báo cáo hoặc quyết định giá nhanh chóng.</td>
+                    </tr>
+                    <tr>
+                        <td>🔔 Push Notification Queue</td>
+                        <td>Lưu danh sách người nhận, trạng thái gửi, retry nhiều lần. Data lớn, cần xử lý song song, hiệu năng cao.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Vì sao nên chọn NoSQL (MongoDB, ScyllaDB, Cassandra)?
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <b>Ưu điểm:</b> Mở rộng ngang tốt, hiệu năng ghi/đọc lớn, phù hợp dữ liệu phi cấu trúc hoặc khối lượng lớn.<br>
+                    <b>Nhược điểm:</b> Truy vấn phức tạp, join hạn chế, nhất quán thấp hơn SQL.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Khi nào nên chọn SQL (PostgreSQL, SQL Server)?
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <b>Ưu điểm:</b> Truy vấn linh hoạt, join mạnh, nhất quán cao, hỗ trợ giao dịch tốt.<br>
+                    <b>Nhược điểm:</b> Khó mở rộng ngang, hiệu năng ghi/đọc lớn không bằng NoSQL.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Lời khuyên chọn CSDL cho demo hoặc dự án thực tế?
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <ul>
+                        <li><b>MongoDB</b>: Dễ học, phù hợp demo, dữ liệu phi cấu trúc, startup.</li>
+                        <li><b>ScyllaDB/Cassandra</b>: Dữ liệu lớn, cần mở rộng, write-heavy, IoT, log.</li>
+                        <li><b>PostgreSQL/SQL Server</b>: Ứng dụng nghiệp vụ, cần join, transaction, báo cáo.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingCassandra">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCassandra" aria-expanded="false" aria-controls="collapseCassandra">
+                    Câu hỏi thường gặp về Cassandra
+                </button>
+            </h2>
+            <div id="collapseCassandra" class="accordion-collapse collapse" aria-labelledby="headingCassandra" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Cassandra hoạt động như thế nào khi mất 1 node?</div>
+                            <div>Giải thích cơ chế replication, hint handoff, và read repair giúp đảm bảo dữ liệu vẫn truy xuất được và hệ thống tự cân bằng lại.</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> So sánh write path và read path giữa Cassandra và PostgreSQL?</div>
+                            <div><b>Cassandra:</b> write nhanh nhờ commit log + memtable, read phức tạp hơn do phải hợp nhất SSTables.<br><b>PostgreSQL:</b> write chậm hơn, read nhanh hơn với index và cache.</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Làm sao để thiết kế partition key và clustering column hiệu quả?</div>
+                            <div>Chọn partition key giúp phân tán dữ liệu đồng đều, clustering column giúp sắp xếp dữ liệu trong partition để tối ưu truy vấn.</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Khi thay đổi schema trong Cassandra, có gây downtime không?</div>
+                            <div>Không gây downtime, Cassandra hỗ trợ thay đổi schema online (alter table), nhưng cần chú ý các thay đổi ảnh hưởng hiệu năng.</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Cassandra có hỗ trợ secondary index không? Có nên dùng?</div>
+                            <div>Có hỗ trợ, nhưng hiệu năng không cao, chỉ dùng cho truy vấn nhỏ hoặc dùng các giải pháp bên ngoài như Solr, Elasticsearch.</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Khác biệt gì giữa ScyllaDB và Cassandra khi chạy workload lớn?</div>
+                            <div>ScyllaDB được viết bằng C++ giúp giảm độ trễ, tăng throughput, sử dụng kiến trúc shard tự động (auto-sharding).</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Cassandra có tích hợp được .NET 8 + EF Core không?</div>
+                            <div>Cassandra có driver cho .NET (DataStax C# driver), tuy nhiên EF Core chưa hỗ trợ chính thức Cassandra.</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Cách thực hiện TTL (time-to-live) cho dữ liệu log trong Cassandra?</div>
+                            <div>TTL gán trực tiếp khi insert hoặc update, dữ liệu tự động hết hạn và bị xóa sau thời gian TTL định trước.</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Cassandra có hỗ trợ backup và restore như thế nào?</div>
+                            <div>Backup bằng snapshot, restore bằng cách copy dữ liệu snapshot vào node; cũng có công cụ hỗ trợ quản lý backup.</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Có thể thay thế Redis bằng Cassandra cho caching không?</div>
+                            <div>Cassandra không phải hệ thống cache in-memory như Redis, không phù hợp làm cache tốc độ cao, nhưng có thể dùng cho caching dữ liệu không cần độ trễ cực thấp.</div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="fw-bold mb-1"><i class="fas fa-question-circle text-primary"></i> Phân tích dữ liệu lớn realtime hoặc batch 🔄 Kết hợp Spark, Kafka để OLAP là gì?</div>
+                            <div>
+                                <span class="fw-bold">🔍 Giải thích từng phần:</span><br>
+                                <span class="fw-bold">🔹 Phân tích dữ liệu lớn realtime hoặc batch</span><br>
+                                Đây là nhu cầu phổ biến trong hệ thống hiện đại, nơi cần:<br>
+                                <b>Realtime:</b> Phân tích ngay lập tức khi dữ liệu được ghi nhận (ví dụ: thống kê doanh số theo phút, phát hiện gian lận tức thời).<br>
+                                <b>Batch:</b> Tổng hợp dữ liệu theo lô, thường chạy theo giờ/ngày để phục vụ báo cáo (ví dụ: báo cáo cuối ngày, đối soát).<br><br>
+                                <span class="fw-bold">🔹 Kết hợp Spark, Kafka để OLAP</span><br>
+                                OLAP (Online Analytical Processing) là kiểu xử lý truy vấn phục vụ phân tích, thường trên dữ liệu khối lượng lớn (big data).<br>
+                                <b>Vấn đề:</b> Cassandra/ScyllaDB vốn thiên về OLTP (Online Transaction Processing) – xử lý truy cập đọc/ghi nhanh, nhưng không tối ưu cho truy vấn phân tích phức tạp (như GROUP BY, JOIN, SUM()…).<br>
+                                <b>Giải pháp:</b><br>
+                                <ul>
+                                    <li><b>Apache Kafka:</b> Thu thập, luân chuyển dòng dữ liệu theo thời gian thực từ các microservices.</li>
+                                    <li><b>Apache Spark:</b> Công cụ xử lý dữ liệu lớn, dùng để phân tích OLAP theo batch hoặc realtime (với Spark Streaming).</li>
+                                </ul>
+                                <b>Cách kết hợp:</b>
+                                <ol>
+                                    <li>Kafka nhận dữ liệu từ hệ thống (VD: giao dịch, đơn hàng, logs).</li>
+                                    <li>Spark đọc từ Kafka hoặc Cassandra, xử lý và tổng hợp thành bảng phân tích.</li>
+                                    <li>Kết quả được lưu vào hệ thống lưu trữ phù hợp với OLAP (như data warehouse, Elasticsearch, ClickHouse hoặc bảng tổng hợp riêng trong Cassandra).</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+} 

@@ -5,10 +5,9 @@ namespace DemoDatabaseCompare.Students
 {
     public interface IStudentAppService
     {
-        Task<StudentDto> InsertAsync(StudentDto input);
-        Task<List<StudentDto>> GetAllAsync(int count);
-        Task<List<StudentDto>> GetPagedAsync(int page, int pageSize);
-        Task<int> GetTotalCountAsync();
-        Task InsertManyAsync(List<StudentDto> inputs);
+        ValueTask<List<StudentDto>> GetAllAsync(int count);
+        ValueTask<List<StudentDto>> GetPagedAsync(int page, int pageSize);
+        ValueTask<int> GetTotalCountAsync();
+        ValueTask InsertManyAsync(List<StudentDto> inputs);
     }
 }

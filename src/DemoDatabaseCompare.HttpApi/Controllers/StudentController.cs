@@ -5,6 +5,8 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Bogus;
+using System.Linq;
+using System.Threading;
 
 namespace DemoDatabaseCompare.Controllers
 {
@@ -22,27 +24,48 @@ namespace DemoDatabaseCompare.Controllers
         }
 
         [HttpGet("generate/{count}")]
-        public async Task<IActionResult> Generate(int count)
+        public async ValueTask<IActionResult> Generate(int count)
         {
             var faker = new Faker<StudentDto>()
-                .RuleFor(s => s.StudentId, f => f.Random.AlphaNumeric(8).ToUpper()) // 👈 THÊM DÒNG NÀY
+                .RuleFor(s => s.StudentId, f => f.Random.AlphaNumeric(8).ToUpper())
                 .RuleFor(s => s.FirstName, f => f.Name.FirstName())
                 .RuleFor(s => s.LastName, f => f.Name.LastName())
                 .RuleFor(s => s.DateOfBirth, f => f.Date.Past(20, DateTime.Now.AddYears(-18)))
                 .RuleFor(s => s.Grade, f => f.Random.String2(2, "ABCDEF"))
                 .RuleFor(s => s.Address, f => f.Address.FullAddress());
 
-
-            var students = faker.Generate(count);
             var stopwatch = Stopwatch.StartNew();
-            await _studentAppService.InsertManyAsync(students);
+
+            const int batchSize = 10000;
+            const int maxConcurrency = 4;
+            var totalBatches = (int)Math.Ceiling(count / (double)batchSize);
+            var semaphore = new SemaphoreSlim(maxConcurrency);
+
+            var tasks = Enumerable.Range(0, totalBatches).Select(async batchIndex =>
+            {
+                await semaphore.WaitAsync();
+                try
+                {
+                    var batchCount = Math.Min(batchSize, count - batchIndex * batchSize);
+                    var students = faker.Generate(batchCount);
+                    await _studentAppService.InsertManyAsync(students);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            await Task.WhenAll(tasks);
+
             stopwatch.Stop();
             _logger.LogInformation($"Inserted {count} students in {stopwatch.ElapsedMilliseconds} ms");
+
             return Ok(new { Count = count, ElapsedMilliseconds = stopwatch.ElapsedMilliseconds });
         }
 
         [HttpGet("read/{count}")]
-        public async Task<IActionResult> Read(int count)
+        public async ValueTask<IActionResult> Read(int count)
         {
             var stopwatch = Stopwatch.StartNew();
             var students = await _studentAppService.GetAllAsync(count);
@@ -52,7 +75,7 @@ namespace DemoDatabaseCompare.Controllers
         }
 
         [HttpGet("read-paged")]
-        public async Task<IActionResult> ReadPaged(int page = 1, int pageSize = 10)
+        public async ValueTask<IActionResult> ReadPaged(int page = 1, int pageSize = 10)
         {
             var stopwatch = Stopwatch.StartNew();
             // Lấy tổng số học sinh

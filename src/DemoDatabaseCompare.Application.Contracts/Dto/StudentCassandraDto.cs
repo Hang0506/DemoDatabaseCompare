@@ -7,7 +7,7 @@ namespace DemoDatabaseCompare.Application.Contracts.Students
     {
         [PartitionKey]
         [Cassandra.Data.Linq.Column("studentid")]
-        public string StudentId { get; set; } = string.Empty;
+        public Guid StudentId { get; set; }
 
         [Cassandra.Data.Linq.Column("firstname")]
         public string FirstName { get; set; } = string.Empty;

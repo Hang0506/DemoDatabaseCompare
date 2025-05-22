@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +6,7 @@ using Volo.Abp.Application.Services;
 
 namespace DemoDatabaseCompare.Students
 {
-    public class StudentAppService : ApplicationService , IStudentAppService
+    public class StudentAppService : ApplicationService, IStudentAppService
     {
         private readonly IStudentRepository _studentRepository;
 
@@ -15,35 +15,39 @@ namespace DemoDatabaseCompare.Students
             _studentRepository = studentRepository;
         }
 
-        public async Task<StudentDto> InsertAsync(StudentDto input)
-        {
-            var student = new Student(Guid.NewGuid(),input.StudentId, input.FirstName, input.LastName, input.DateOfBirth, input.Grade, input.Address);
-            student = await _studentRepository.InsertAsync(student, autoSave: true);
-            return ObjectMapper.Map<Student, StudentDto>(student);
-        }
-
-        public async Task<List<StudentDto>> GetAllAsync(int count)
+        public async ValueTask<List<StudentDto>> GetAllAsync(int count)
         {
             var students = await _studentRepository.GetListAsync();
             return students.Take(count).Select(x => ObjectMapper.Map<Student, StudentDto>(x)).ToList();
         }
 
-        public async Task<List<StudentDto>> GetPagedAsync(int page, int pageSize)
+        public async ValueTask<List<StudentDto>> GetPagedAsync(int page, int pageSize)
         {
-            var students = await _studentRepository.GetListAsync();
-            return students.Skip((page - 1) * pageSize).Take(pageSize).Select(x => ObjectMapper.Map<Student, StudentDto>(x)).ToList();
+            var students = await _studentRepository.GetPagedListAsync(page, pageSize);
+            return students.Select(x => new StudentDto
+            {
+                Id = x.Id,
+                StudentId = x.StudentId,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                DateOfBirth = x.DateOfBirth,
+                Grade = x.Grade,
+                Address = x.Address
+            }).ToList();
         }
 
-        public async Task<int> GetTotalCountAsync()
+        public async ValueTask<int> GetTotalCountAsync()
         {
-            return (int)await _studentRepository.GetCountAsync();
+            return await _studentRepository.GetTotalCountAsync();
         }
 
-        public async Task InsertManyAsync(List<StudentDto> inputs)
+        public async ValueTask InsertManyAsync(List<StudentDto> inputs)
         {
-            var students = inputs.Select(input => new Student(Guid.NewGuid(), input.StudentId, input.FirstName, input.LastName, input.DateOfBirth, input.Grade, input.Address)).ToList();
+            var students = inputs.Select(input =>
+                new Student(Guid.NewGuid(), input.StudentId, input.FirstName, input.LastName, input.DateOfBirth, input.Grade, input.Address)
+            ).ToList();
+
             await _studentRepository.InsertManyAsync(students);
         }
-        
     }
-} 
+}

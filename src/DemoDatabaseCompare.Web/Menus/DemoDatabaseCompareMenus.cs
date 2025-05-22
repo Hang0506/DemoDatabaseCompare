@@ -4,7 +4,8 @@ public class DemoDatabaseCompareMenus
 {
     private const string Prefix = "DemoDatabaseCompare";
     public const string Home = Prefix + ".Home";
-    public const string Students = Prefix + ".Students";
+    public const string Demo = Prefix + ".Demo";
+    public const string FAQ = Prefix + ".FAQ";
 
     //Add your menu items here...
 

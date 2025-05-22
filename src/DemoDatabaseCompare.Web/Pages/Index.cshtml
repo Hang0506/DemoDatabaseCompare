@@ -1,60 +1,76 @@
 @page
-<div class="row mb-3">
-    <div class="col-xl-6 col-12 d-flex">
-        <div class="card h-lg-100 w-100 overflow-hidden">
-            <div class="card-body">
-                <div class="starting-content">
-                    <h3>Getting Started</h3>
-                    <p class="lead text-muted mb-2">Learn how to create and run a new web application using the application startup template.</p>
-                    <a href="https://docs.abp.io/en/commercial/latest/getting-started" class="btn btn-brand mb-4" target="_blank">Getting Started</a>
+<style>
+    @@media (max-width: 900px) {
+        .cassandra-home { flex-direction: column; }
+        .cassandra-info, .cassandra-logo { padding: 32px 16px; border-radius: 0; }
+        .cassandra-logo { min-height: 200px; }
+        .cassandra-logo img {
+            max-width: 200px;
+            max-height: 150px;
+        }
+    }
+    .cassandra-home {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        background: #f6f6fb;
+        border-radius: 16px;
+        box-shadow: 0 2px 16px 0 rgba(80,80,120,0.04);
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+    .cassandra-info {
+        flex: 1;
+        padding: 48px 40px 48px 64px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .cassandra-title {
+        color: #7b6ef6;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 24px;
+    }
+    .cassandra-info p {
+        font-size: 1.15rem;
+        color: #222;
+        margin-bottom: 12px;
+    }
+    .cassandra-info b {
+        font-weight: 700;
+    }
+    .cassandra-logo {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(90deg, #f6f6fb 60%, #e9eaf7 100%);
+        border-top-right-radius: 16px;
+        border-bottom-right-radius: 16px;
+        min-height: 400px;
+    }
+    .cassandra-logo img {
+        max-width: 100%;
+        max-height: 300px;
+        width: auto;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+        filter: drop-shadow(0 4px 24px rgba(80,80,120,0.10));
+        background: transparent;
+        object-fit: contain;
+    }
 
-                    <h4>Web Application Development Tutorial</h4>
-                    <p class="text-muted mb-2">Learn how to build an ABP based web application named Acme.BookStore.</p>
-                    <a href="https://docs.abp.io/en/commercial/latest/tutorials/book-store/part-1?UI=MVC&DB=EF" class="btn btn-primary soft mb-4" target="_blank">Explore Tutorial</a>
-
-                    <h4>Customize Lepton Theme</h4>
-                    <p class="text-muted mb-2">Learn how to customize LeptonX Theme as you wish.</p>
-                    <a href="https://docs.abp.io/en/commercial/latest/themes/lepton/customizing-lepton-theme" class="btn btn-primary soft mb-5 mb-xl-0" target="_blank">Customize Lepton</a>
-                </div>
-                <img class="card-bg-image" src="/images/getting-started/bg-01.png">
-            </div>
-        </div>
+</style>
+<div class="cassandra-home">
+    <div class="cassandra-info">
+        <div class="cassandra-title">Giới thiệu về Apache Cassandra</div>
+        <p><b>Apache Cassandra</b> là cơ sở dữ liệu NoSQL, xử lý dữ liệu lớn phân tán.</p>
+        <p>Được dùng bởi Netflix, Facebook, Instagram để đảm bảo hệ thống ổn định.</p>
+        <p>Thiết kế cho lưu trữ hàng tỷ tin nhắn mỗi ngày.</p>
     </div>
-
-    <div class="col-xl-3 col-md-6 d-flex">
-        <div class="row">
-            <div class="col-12 d-flex">
-                <div class="card overflow-hidden">
-                    <div class="card-body pb-0">
-                        <div class="abp-support abp-logo mb-2"></div>
-                        <p class="text-muted mb-2">You can check for similar problems and solutions, or open a new topic to discuss your specific issue.</p>
-                        <a href="https://support.abp.io/QA/Questions" class="btn btn-brand soft" target="_blank">Visit Support</a>
-                        <img class="" src="/images/getting-started/img-support.png">
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 d-flex">
-                <div class="card h-md-100 overflow-hidden">
-                    <div class="card-body pb-0">
-                        <div class="abp-blog abp-logo mb-2"></div>
-                        <p class="text-muted mb-2">You can find content on .NET development, cross-platform, ASP.NET application templates, ABP-related news, and more.</p>
-                        <a href="https://blog.abp.io/abp" class="btn btn-brand soft" target="_blank">Visit Blog</a>
-                        <img style="margin-bottom: -24px;" src="/images/getting-started/img-blog.png">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6 d-flex">
-        <div class="card h-100 overflow-hidden">
-            <div class="card-body">
-                <div class="abp-community abp-logo mb-2"></div>
-                <p class="lead text-muted">A unique community platform for <span class="fw-bold">ABP Lovers!</span></p>
-                <p class="text-muted mb-2">Explore all ABP users' experiences with the ABP Framework, discover articles and videos on how to use ABP, and join raffles for a chance to win surprise gifts!</p>
-                <a class="btn btn-brand soft mb-3" href="https://community.abp.io/" target="_blank">Join ABP Community</a>
-            </div>
-            <img class="mt-3" src="/images/getting-started/img-community.png">
-        </div>
+    <div class="cassandra-logo">
+        <img src="/images/cassandra.png" alt="Cassandra logo" />
     </div>
 </div>
