@@ -28,7 +28,7 @@ namespace DemoCompare.Cassandra.Repositories
 
         public async ValueTask InsertManyAsync(List<StudentCassandraEntity> students)
         {
-            const int batchSize = 100;
+            const int batchSize = 50;
 
             // Prepare statement 1 lần
             var statement = _session.Prepare(
@@ -92,5 +92,10 @@ namespace DemoCompare.Cassandra.Repositories
             return result;
         }
 
+        public async ValueTask ClearAllAsync()
+        {
+            var cql = "TRUNCATE students";
+            await _session.ExecuteAsync(new SimpleStatement(cql));
+        }
     }
 }

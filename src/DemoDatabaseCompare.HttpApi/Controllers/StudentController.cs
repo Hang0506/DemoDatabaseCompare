@@ -11,7 +11,7 @@ using System.Threading;
 namespace DemoDatabaseCompare.Controllers
 {
     [ApiController]
-    [Route("api/students")]
+    [Route("api/sql/students")]
     public class StudentController : ControllerBase
     {
         private readonly IStudentAppService _studentAppService;
@@ -93,6 +93,13 @@ namespace DemoDatabaseCompare.Controllers
                 ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
                 Data = students
             });
+        }
+
+        [HttpDelete("clear")]
+        public async ValueTask<IActionResult> Clear()
+        {
+            await _studentAppService.ClearAllAsync();
+            return Ok(new { Success = true });
         }
     }
 }

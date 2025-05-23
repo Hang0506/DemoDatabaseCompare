@@ -20,21 +20,36 @@ namespace DemoDatabaseCompare.Scylla.Controllers
             _studentService = studentService;
         }
 
+
         [HttpGet("generate/{count}")]
         public async ValueTask<IActionResult> Generate(int count)
         {
+            var stopwatch = Stopwatch.StartNew();
+
+            var students = GenerateFakeStudents(count);
+
+            await _studentService.InsertManyAsync(students);
+
+            stopwatch.Stop();
+
+            return Ok(new
+            {
+                Count = count,
+                ElapsedMilliseconds = stopwatch.ElapsedMilliseconds
+            });
+        }
+
+        private List<StudentScyllaDto> GenerateFakeStudents(int count)
+        {
             var faker = new Faker<StudentScyllaDto>()
-                .RuleFor(s => s.StudentId, f => Guid.NewGuid())  // <-- Sinh Guid trực tiếp
+                .RuleFor(s => s.StudentId, f => Guid.NewGuid())
                 .RuleFor(s => s.FirstName, f => f.Name.FirstName())
                 .RuleFor(s => s.LastName, f => f.Name.LastName())
                 .RuleFor(s => s.DateOfBirth, f => f.Date.Past(20, DateTime.Now.AddYears(-18)))
                 .RuleFor(s => s.Grade, f => f.Random.String2(2, "ABCDEF"))
                 .RuleFor(s => s.Address, f => f.Address.FullAddress());
-            var students = faker.Generate(count);
-            var stopwatch = Stopwatch.StartNew();
-            await _studentService.InsertManyAsync(students);
-            stopwatch.Stop();
-            return Ok(new { Count = count, ElapsedMilliseconds = stopwatch.ElapsedMilliseconds });
+
+            return faker.Generate(count);
         }
 
         [HttpGet("paged")]
@@ -42,6 +57,13 @@ namespace DemoDatabaseCompare.Scylla.Controllers
         {
             var result = await _studentService.GetPagedAsync(page, pageSize);
             return Ok(result);
+        }
+
+        [HttpDelete("clear")]
+        public async ValueTask<IActionResult> Clear()
+        {
+            await _studentService.ClearAllAsync();
+            return Ok(new { Success = true });
         }
     }
 }

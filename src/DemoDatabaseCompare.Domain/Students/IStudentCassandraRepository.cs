@@ -8,5 +8,6 @@ namespace DemoCompare.Cassandra.Repositories
     {
         ValueTask InsertManyAsync(List<StudentCassandraEntity> students);
         ValueTask<List<StudentCassandraEntity>> GetPagedAsync(int page, int pageSize);
+        ValueTask ClearAllAsync();
     }
 } 

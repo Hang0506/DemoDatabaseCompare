@@ -8,5 +8,6 @@ namespace DemoDatabaseCompare.Students
     {
         ValueTask<List<StudentScyllaDto>> GetPagedAsync(int page, int pageSize);
         ValueTask InsertManyAsync(List<StudentScyllaDto> inputs);
+        ValueTask ClearAllAsync();
     }
 } 

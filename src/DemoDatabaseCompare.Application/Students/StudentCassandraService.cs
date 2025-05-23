@@ -37,5 +37,10 @@ namespace DemoCompare.Cassandra.Services
             }).ToList();
             return studentDtos;
         }
+
+        public async ValueTask ClearAllAsync()
+        {
+            await _repository.ClearAllAsync();
+        }
     }
 } 

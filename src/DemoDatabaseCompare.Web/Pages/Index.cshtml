@@ -1,76 +1,98 @@
 @page
 <style>
-    @@media (max-width: 900px) {
-        .cassandra-home { flex-direction: column; }
-        .cassandra-info, .cassandra-logo { padding: 32px 16px; border-radius: 0; }
-        .cassandra-logo { min-height: 200px; }
-        .cassandra-logo img {
-            max-width: 200px;
-            max-height: 150px;
-        }
+    body, .cassandra-slide * {
+        font-family: 'Quicksand', Arial, sans-serif;
+        box-sizing: border-box;
     }
-    .cassandra-home {
-        min-height: 80vh;
+    .cassandra-slide {
+        background: #fafaff;
+        border-radius: 24px;
+        box-shadow: 0 4px 32px 0 rgba(123,110,246,0.08);
         display: flex;
-        align-items: center;
-        background: #f6f6fb;
-        border-radius: 16px;
-        box-shadow: 0 2px 16px 0 rgba(80,80,120,0.04);
-        margin-top: 40px;
-        margin-bottom: 40px;
+        align-items: stretch;
+        min-height: 380px;
+        margin: 48px auto 48px auto;
+        max-width: 980px;
+        padding: 0;
     }
-    .cassandra-info {
-        flex: 1;
-        padding: 48px 40px 48px 64px;
+    .cassandra-slide-content {
+        flex: 1.2;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: flex-start;
+        padding: 56px 48px 56px 56px;
+        background: transparent;
     }
-    .cassandra-title {
+    .cassandra-slide-title {
         color: #7b6ef6;
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         font-weight: 700;
-        margin-bottom: 24px;
+        letter-spacing: -1px;
+        margin-bottom: 28px;
+        font-family: 'Quicksand', Arial, sans-serif;
     }
-    .cassandra-info p {
-        font-size: 1.15rem;
-        color: #222;
-        margin-bottom: 12px;
+    .cassandra-slide-content p {
+        color: #23223a;
+        font-size: 1.18rem;
+        margin-bottom: 16px;
+        line-height: 1.7;
+        text-align: left;
+        font-weight: 500;
     }
-    .cassandra-info b {
+    .cassandra-slide-content b {
         font-weight: 700;
     }
-    .cassandra-logo {
+    .cassandra-slide-logo {
         flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(90deg, #f6f6fb 60%, #e9eaf7 100%);
-        border-top-right-radius: 16px;
-        border-bottom-right-radius: 16px;
-        min-height: 400px;
+        background: #f4f3fd;
+        border-top-right-radius: 24px;
+        border-bottom-right-radius: 24px;
+        min-width: 320px;
+        min-height: 320px;
+        max-width: 380px;
+        box-shadow: 0 6px 32px 0 rgba(123,110,246,0.10);
+        margin: 0;
     }
-    .cassandra-logo img {
-        max-width: 100%;
-        max-height: 300px;
-        width: auto;
-        height: auto;
+    .cassandra-slide-logo img {
+        max-width: 180px;
+        max-height: 140px;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px 0 rgba(123,110,246,0.13);
+        background: #fff;
+        object-fit: contain;
         display: block;
         margin: 0 auto;
-        filter: drop-shadow(0 4px 24px rgba(80,80,120,0.10));
-        background: transparent;
-        object-fit: contain;
     }
-
+    media (max-width: 900px) {
+        .cassandra-slide {
+            flex-direction: column;
+            min-height: unset;
+            max-width: 98vw;
+        }
+        .cassandra-slide-content {
+            padding: 36px 18px 24px 18px;
+        }
+        .cassandra-slide-logo {
+            border-radius: 0 0 24px 24px;
+            min-width: unset;
+            min-height: 180px;
+            max-width: 100vw;
+            padding: 18px 0;
+        }
+    }
 </style>
-<div class="cassandra-home">
-    <div class="cassandra-info">
-        <div class="cassandra-title">Giới thiệu về Apache Cassandra</div>
+<div class="cassandra-slide">
+    <div class="cassandra-slide-content">
+        <div class="cassandra-slide-title">Giới thiệu về Apache Cassandra</div>
         <p><b>Apache Cassandra</b> là cơ sở dữ liệu NoSQL, xử lý dữ liệu lớn phân tán.</p>
         <p>Được dùng bởi Netflix, Facebook, Instagram để đảm bảo hệ thống ổn định.</p>
         <p>Thiết kế cho lưu trữ hàng tỷ tin nhắn mỗi ngày.</p>
     </div>
-    <div class="cassandra-logo">
+    <div class="cassandra-slide-logo">
         <img src="/images/cassandra.png" alt="Cassandra logo" />
     </div>
 </div>

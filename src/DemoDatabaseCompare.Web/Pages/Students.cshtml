@@ -1,486 +1,249 @@
 @page
 @model DemoDatabaseCompare.Web.Pages.StudentsModel
 @{
-    ViewData["Title"] = "Student List";
+    ViewData["Title"] = "DBMS Insert Performance Demo";
 }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
-        margin: 0;
-        padding: 0;
+        min-height: 100vh;
     }
-    h1 {
-        text-align: center;
-        color: #333;
-        margin-top: 30px;
-    }
-    .student-actions {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 25px;
-    }
-    button {
-        background: #1976d2;
-        color: #fff;
-        border: none;
-        padding: 10px 22px;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background 0.2s;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-    }
-    button:hover {
-        background: #1565c0;
-    }
-    #studentsTable {
-        margin: 0 auto;
-        border-collapse: collapse;
-        width: 90%;
-        background: #fff;
+    .dashboard-card {
         box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        border-radius: 1rem;
+        margin-bottom: 2rem;
     }
-    #studentsTable th, #studentsTable td {
-        padding: 12px 16px;
-        border-bottom: 1px solid #e0e0e0;
-        text-align: left;
-    }
-    #studentsTable th {
-        background: #1976d2;
-        color: #fff;
+    .db-label {
         font-weight: 600;
+        font-size: 1.1rem;
     }
-    #studentsTable tr:hover {
-        background: #f1f8ff;
+    .result-time {
+        font-size: 1.2rem;
+        font-weight: 500;
     }
-    .grid-container {
-        display: flex;
-        gap: 30px;
-        justify-content: center;
-        margin-bottom: 30px;
+    .record-badge {
+        font-size: 1rem;
+        margin-left: 0.5rem;
     }
-    .db-col {
-        flex: 1;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        padding: 20px;
-    }
-    .studentsTable th, .studentsTable td {
-        padding: 8px 10px;
-        border-bottom: 1px solid #e0e0e0;
-    }
-    .stats-box {
-        background: #e3f2fd;
-        border-radius: 8px;
-        padding: 12px 18px;
-        margin-bottom: 12px;
-        color: #1565c0;
-        font-size: 15px;
-    }
-    .diff-row {
-        background-color: #ffe0e0 !important;
-    }
-    .same-row {
-        background-color: #e0ffe0 !important;
-    }
-    .actions-row {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin: 20px 0;
-        align-items: center;
-    }
-    .input-qty {
-        border: 1.5px solid #1976d2;
-        border-radius: 6px;
-        padding: 8px 14px;
-        font-size: 16px;
-        outline: none;
-        transition: border 0.2s, box-shadow 0.2s;
-        box-shadow: 0 1px 4px rgba(25,118,210,0.07);
-        margin-right: 5px;
-        width: 90px;
-    }
-    .input-qty:focus {
-        border: 2px solid #1565c0;
-        box-shadow: 0 2px 8px rgba(25,118,210,0.13);
-    }
-    #chartTab {
-        animation: fadeIn 0.3s;
-    }
-    @@keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    .chart-container {
+        min-height: 350px;
     }
 </style>
-<h1>Student List</h1>
-<div class="actions-row">
-    <input id="insertCount" class="input-qty" type="number" min="1" value="5" placeholder="Số lượng...">
-    <button id="insertSqlBtn">Insert SQL Server</button>
-    <button id="insertCasBtn">Insert Cassandra</button>
-    <button id="searchSqlBtn">Search SQL Server</button>
-    <button id="searchCasBtn">Search Cassandra</button>
-    <label><input type="checkbox" id="showDiffOnly"> Chỉ hiển thị dòng khác biệt</label>
-    <button id="showChartTabBtn">So sánh biểu đồ hiệu suất</button>
-    <button id="autoInsertBtn">Chạy kịch bản Insert</button>
-</div>
-<div id="autoInsertStats" class="stats-box" style="display:none;"></div>
-<div id="chartTab" style="display:none; margin: 30px auto; width: 80%; background: #fff; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 30px;">
-    <canvas id="perfChart" height="120"></canvas>
-    <button id="closeChartTabBtn" style="margin-top: 20px;">Đóng</button>
-</div>
-<div class="grid-container">
-    <div class="db-col">
-        <h2>SQL Server</h2>
-        <div class="stats-box" id="sqlStats"></div>
-        <table id="sqlTable" class="studentsTable">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>StudentId</th>
-                    <th>FirstName</th>
-                    <th>LastName</th>
-                    <th>DateOfBirth</th>
-                    <th>Grade</th>
-                    <th>Address</th>
-                    <th>So sánh</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+<div class="container py-4">
+    <h1 class="text-center mb-4">DBMS Insert Performance Demo</h1>
+    <div class="row mb-4 g-3 justify-content-center">
+        <div class="col-auto">
+            <input id="insertCount" class="form-control form-control-lg" type="number" min="1" value="100" placeholder="Số lượng record...">
+        </div>
+        <div class="col-auto">
+            <button id="insertSqlBtn" class="btn btn-primary btn-lg">Insert SQL Server</button>
+        </div>
+        <div class="col-auto">
+            <button id="insertMongoBtn" class="btn btn-success btn-lg">Insert MongoDB</button>
+        </div>
+        <div class="col-auto">
+            <button id="insertCasBtn" class="btn btn-warning btn-lg">Insert Cassandra</button>
+        </div>
+        <div class="col-auto">
+            <button id="insertScyllaBtn" class="btn btn-dark btn-lg">Insert ScyllaDB</button>
+        </div>
+        <div class="col-auto">
+            <button id="runAllBtn" class="btn btn-outline-secondary btn-lg">Chạy tất cả mức</button>
+        </div>
+        <div class="col-auto">
+            <button id="compareBtn" class="btn btn-info btn-lg">So sánh kết quả</button>
+        </div>
     </div>
-    <div class="db-col">
-        <h2>Cassandra</h2>
-        <div class="stats-box" id="casStats"></div>
-        <table id="casTable" class="studentsTable">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>StudentId</th>
-                    <th>FirstName</th>
-                    <th>LastName</th>
-                    <th>DateOfBirth</th>
-                    <th>Grade</th>
-                    <th>Address</th>
-                    <th>So sánh</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4" id="resultsRow">
+        <!-- Cards for each DB will be injected here -->
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <h5 class="card-title">Kết quả chi tiết</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle text-center" id="resultsTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>DBMS</th>
+                                    <th>Số lượng record</th>
+                                    <th>Thời gian Insert (ms)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Results rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for comparison chart -->
+    <div class="modal fade" id="compareModal" tabindex="-1" aria-labelledby="compareModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="compareModalLabel">So sánh hiệu suất Insert giữa các DBMS</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="chart-container">
+                <canvas id="compareChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 </div>
-<div class="pagination-row">
-    <button id="prevPage">Trang trước</button>
-    <span id="pageInfo"></span>
-    <button id="nextPage">Trang sau</button>
-</div>
-@section Scripts {
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    let currentPage = 1;
-    let sqlData = [];
-    let casData = [];
-    let sqlStats = {};
-    let casStats = {};
-    let diffRows = [];
-    let perfChart = null;
+const dbList = [
+    { key: 'sql', label: 'SQL Server', color: '#1976d2', api: '/api/sql/students/generate/' },
+    { key: 'mongo', label: 'MongoDB', color: '#43a047', api: '/api/mongodb/students/generate/' },
+    { key: 'cassandra', label: 'Cassandra', color: '#ffa000', api: '/api/cassandra/students/generate/' },
+    { key: 'scylla', label: 'ScyllaDB', color: '#212529', api: '/api/scylla/students/generate/' }
+];
+//const testLevels = [ 1000000];
+const testLevels = [10, 100, 1000, 10000, 100000];
+let results = {};
+let compareChart = null;
 
-    function getPageSize() {
-        return parseInt(document.getElementById('insertCount').value) || 10;
+function renderCards() {
+    const row = document.getElementById('resultsRow');
+    row.innerHTML = dbList.map(db => `
+        <div class="col">
+            <div class="card dashboard-card h-100 border-0">
+                <div class="card-body text-center">
+                    <div class="db-label mb-2" style="color:${db.color}">${db.label}</div>
+                    <div id="card-${db.key}" class="result-time">-</div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderTable() {
+    const tbody = document.querySelector('#resultsTable tbody');
+    tbody.innerHTML = '';
+    dbList.forEach(db => {
+        if (results[db.key]) {
+            Object.entries(results[db.key]).forEach(([count, ms]) => {
+                tbody.innerHTML += `<tr>
+                    <td style="color:${db.color};font-weight:600">${db.label}</td>
+                    <td>${count.toLocaleString()}</td>
+                    <td>${ms ? ms.toLocaleString() : '-'} ms</td>
+                </tr>`;
+            });
+        }
+    });
+}
+
+function updateCard(dbKey, count, ms) {
+    const el = document.getElementById(`card-${dbKey}`);
+    if (el) {
+        el.innerHTML = `<span>${ms ? ms.toLocaleString() : '-'} ms</span><span class="badge bg-secondary record-badge">${count.toLocaleString()}</span>`;
     }
+}
 
-    function renderTable(tableId, data, compareArr, isSql) {
-        const tbody = document.querySelector(`#${tableId} tbody`);
-        tbody.innerHTML = '';
-        const pageSize = getPageSize();
-        data.forEach((student, idx) => {
-            const stt = (currentPage - 1) * pageSize + idx + 1;
-            let compareCell = '';
-            let rowClass = '';
-            if (compareArr) {
-                if (!compareArr[idx]) {
-                    compareCell = '';
-                } else if (compareArr[idx] === 'diff') {
-                    compareCell = '<span style="color:red;font-size:18px;">❌</span>';
-                    rowClass = 'diff-row';
-                } else {
-                    compareCell = '<span style="color:green;font-size:18px;">✅</span>';
-                    rowClass = 'same-row';
-                }
-            }
-            const row = `<tr class="${rowClass}">
-                <td>${stt}</td>
-                <td>${student.studentId}</td>
-                <td>${student.firstName}</td>
-                <td>${student.lastName}</td>
-                <td>${new Date(student.dateOfBirth).toLocaleDateString()}</td>
-                <td>${student.grade}</td>
-                <td>${student.address}</td>
-                <td>${compareCell}</td>
-            </tr>`;
-            tbody.innerHTML += row;
+function showToast(msg, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-bg-${type} border-0 position-fixed bottom-0 end-0 m-4`;
+    toast.role = 'alert';
+    toast.innerHTML = `<div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
+    document.body.appendChild(toast);
+    const bsToast = new bootstrap.Toast(toast, { delay: 2500 });
+    bsToast.show();
+    toast.addEventListener('hidden.bs.toast', () => toast.remove());
+}
+
+function runInsert(dbKey, count) {
+    const db = dbList.find(d => d.key === dbKey);
+    if (!db) return;
+    const url = db.api + count;
+    const t0 = performance.now();
+    updateCard(dbKey, count, '...');
+    return fetch(url, { method: 'GET' })
+        .then(res => res.json())
+        .then(data => {
+            const ms = data.elapsedMilliseconds || Math.round(performance.now() - t0);
+            if (!results[dbKey]) results[dbKey] = {};
+            results[dbKey][count] = ms;
+            updateCard(dbKey, count, ms);
+            renderTable();
+            showToast(`Insert ${count} record vào ${db.label}: ${ms} ms`, 'success');
+        })
+        .catch(() => {
+            updateCard(dbKey, count, '-');
+            showToast(`Insert thất bại cho ${db.label}`, 'danger');
         });
-    }
+}
 
-    function updateStatsBox(statsId, stats, dbName) {
-        function formatTime(ms) {
-            if (!ms || isNaN(ms)) return '-';
-            let str = ms + 'ms';
-            if (ms >= 60000) {
-                const min = Math.floor(ms / 60000);
-                const sec = ((ms % 60000) / 1000).toFixed(1);
-                str += ` (${min} phút, ${sec}s)`;
-            } else if (ms >= 1000) {
-                str += ` (${(ms / 1000).toFixed(2)}s)`;
-            }
-            return str;
+document.getElementById('insertSqlBtn').onclick = () => {
+    const count = parseInt(document.getElementById('insertCount').value) || 1;
+    runInsert('sql', count);
+};
+document.getElementById('insertMongoBtn').onclick = () => {
+    const count = parseInt(document.getElementById('insertCount').value) || 1;
+    runInsert('mongo', count);
+};
+document.getElementById('insertCasBtn').onclick = () => {
+    const count = parseInt(document.getElementById('insertCount').value) || 1;
+    runInsert('cassandra', count);
+};
+document.getElementById('insertScyllaBtn').onclick = () => {
+    const count = parseInt(document.getElementById('insertCount').value) || 1;
+    runInsert('scylla', count);
+};
+
+document.getElementById('runAllBtn').onclick = async () => {
+    for (let count of testLevels) {
+        for (let db of dbList) {
+            await runInsert(db.key, count);
+            await new Promise(r => setTimeout(r, 400));
         }
-        document.getElementById(statsId).innerHTML = `
-          <h3>Hiệu suất ${dbName}</h3>
-          <p>Insert: <b>${formatTime(stats.insert)}</b></p>
-          <p>Search: <b>${formatTime(stats.search)}</b></p>
-          <p>Số dòng: <b>${stats.total || '-'}</b></p>
-        `;
     }
+    showToast('Đã chạy xong tất cả các mức!', 'primary');
+};
 
-    function fetchSqlData() {
-        const t0 = performance.now();
-        const pageSize = getPageSize();
-        return fetch(`https://localhost:44332/api/students/read-paged?page=${currentPage}&pageSize=${pageSize}`)
-            .then(res => res.json())
-            .then(data => {
-                sqlData = data.data;
-                sqlStats.search = data.elapsedMilliseconds || Math.round(performance.now() - t0);
-                sqlStats.total = data.totalCount || sqlData.length;
-                updateStatsBox('sqlStats', sqlStats, 'SQL Server');
-            });
-    }
-    function fetchCasData() {
-        const t0 = performance.now();
-        const pageSize = getPageSize();
-        return fetch(`https://localhost:44332/api/cassandra/students/paged?page=${currentPage}&pageSize=${pageSize}`)
-            .then(res => res.json())
-            .then(data => {
-                casData = Array.isArray(data) ? data : data.data;
-                casStats.search = Math.round(performance.now() - t0);
-                casStats.total = casData.length;
-                updateStatsBox('casStats', casStats, 'Cassandra');
-            });
-    }
+document.getElementById('compareBtn').onclick = () => {
+    const modal = new bootstrap.Modal(document.getElementById('compareModal'));
+    renderCompareChart();
+    modal.show();
+};
 
-    function loadBothTables() {
-        Promise.all([fetchSqlData(), fetchCasData()]).then(() => {
-            console.log('Current page:', currentPage, 'SQL:', sqlData, 'CAS:', casData);
-            renderTable('sqlTable', sqlData, diffRows.length ? diffRows : undefined);
-            renderTable('casTable', casData, diffRows.length ? diffRows : undefined);
-            document.getElementById('pageInfo').innerText = `Trang ${currentPage}`;
-            const pageSize = getPageSize();
-            document.getElementById('prevPage').disabled = currentPage <= 1;
-            document.getElementById('nextPage').disabled = sqlData.length < pageSize && casData.length < pageSize;
-        });
-    }
-
-    document.getElementById('insertSqlBtn').onclick = function() {
-        const count = document.getElementById('insertCount').value || 1;
-        const t0 = performance.now();
-            fetch(`https://localhost:44332/api/students/generate/${count}`, { method: 'GET' })
-            .then(res => res.json())
-            .then(data => {
-                sqlStats.insert = data.elapsedMilliseconds || Math.round(performance.now() - t0);
-                updateStatsBox('sqlStats', sqlStats, 'SQL Server');
-                loadBothTables();
-            });
-    };
-    document.getElementById('insertCasBtn').onclick = function() {
-        const count = document.getElementById('insertCount').value || 1;
-        const t0 = performance.now();
-        fetch(`https://localhost:44332/api/cassandra/students/generate/${count}`, { method: 'GET' })
-            .then(res => res.json())
-            .then(data => {
-                casStats.insert = data.elapsedMilliseconds || Math.round(performance.now() - t0);
-                updateStatsBox('casStats', casStats, 'Cassandra');
-                loadBothTables();
-            });
-    };
-    document.getElementById('searchSqlBtn').onclick = function() {
-        fetchSqlData().then(() => renderTable('sqlTable', sqlData, diffRows.length ? diffRows : undefined));
-    };
-    document.getElementById('searchCasBtn').onclick = function() {
-        fetchCasData().then(() => renderTable('casTable', casData, diffRows.length ? diffRows : undefined));
-    };
-
-    document.getElementById('insertCount').onchange = function() {
-        currentPage = 1;
-        loadBothTables();
-    };
-
-    document.getElementById('prevPage').onclick = function() {
-        if (currentPage > 1) {
-            currentPage--;
-            loadBothTables();
-        }
-    };
-    document.getElementById('nextPage').onclick = function() {
-        currentPage++;
-        loadBothTables();
-    };
-
-    document.getElementById('showDiffOnly').onchange = function() {
-        if (!diffRows.length) return;
-        if (this.checked) {
-            const sqlFiltered = sqlData.filter((_, i) => diffRows[i] === 'diff');
-            const casFiltered = casData.filter((_, i) => diffRows[i] === 'diff');
-            renderTable('sqlTable', sqlFiltered, Array(sqlFiltered.length).fill('diff'), true);
-            renderTable('casTable', casFiltered, Array(casFiltered.length).fill('diff'), false);
-        } else {
-            renderTable('sqlTable', sqlData, diffRows, true);
-            renderTable('casTable', casData, diffRows, false);
-        }
-    };
-
-    document.getElementById('showChartTabBtn').onclick = function() {
-        document.getElementById('chartTab').style.display = 'block';
-        if (window.autoInsertPerfData) {
-            renderPerfChartAutoInsert();
-        } else {
-            renderPerfChart();
-        }
-    };
-    document.getElementById('closeChartTabBtn').onclick = function() {
-        document.getElementById('chartTab').style.display = 'none';
-    };
-
-    function renderPerfChart() {
-        const ctx = document.getElementById('perfChart').getContext('2d');
-        const labels = ['Insert', 'Search'];
-        const sqlDataArr = [sqlStats.insert || 0, sqlStats.search || 0];
-        const casDataArr = [casStats.insert || 0, casStats.search || 0];
-
-        if (perfChart) {
-            perfChart.destroy();
-        }
-        perfChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'SQL Server',
-                        data: sqlDataArr,
-                        backgroundColor: 'rgba(25, 118, 210, 0.7)'
-                    },
-                    {
-                        label: 'Cassandra',
-                        data: casDataArr,
-                        backgroundColor: 'rgba(255, 193, 7, 0.7)'
-                    }
-                ]
+function renderCompareChart() {
+    const ctx = document.getElementById('compareChart').getContext('2d');
+    const labels = testLevels.map(c => c.toLocaleString());
+    const datasets = dbList.map(db => ({
+        label: db.label,
+        data: labels.map(lvl => results[db.key] && results[db.key][parseInt(lvl.replace(/,/g,''))] ? results[db.key][parseInt(lvl.replace(/,/g,''))] : null),
+        backgroundColor: db.color
+    }));
+    console.log('labels:', labels);
+    console.log('datasets:', datasets);
+    if (compareChart) compareChart.destroy();
+    compareChart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'So sánh thời gian Insert (ms) theo số lượng record' }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'So sánh hiệu suất Insert & Search' }
-                },
-                scales: {
-                    y: { beginAtZero: true, title: { display: true, text: 'Thời gian (ms)' } }
-                }
+            scales: {
+                y: { beginAtZero: true, title: { display: true, text: 'Thời gian (ms)' } }
             }
-        });
-    }
-
-    document.getElementById('autoInsertBtn').onclick = async function() {
-        const insertCounts = [100, 1000, 10000, 1000000];
-        const sqlResults = [];
-        const casResults = [];
-        const sqlTimes = [];
-        const casTimes = [];
-        for (let count of insertCounts) {
-            // Insert SQL Server
-            const t0 = performance.now();
-            await fetch(`https://localhost:44332/api/students/generate/${count}`, { method: 'GET' })
-                .then(res => res.json());
-            const elapsedSql = Math.round(performance.now() - t0);
-            sqlResults.push(`Insert ${count} bản ghi vào SQL Server: ${elapsedSql} ms`);
-            sqlTimes.push(elapsedSql);
-            sqlStats.insert = elapsedSql;
-            updateStatsBox('sqlStats', sqlStats, 'SQL Server');
-            showAutoInsertResults([sqlResults[sqlResults.length - 1]]);
-            await new Promise(r => setTimeout(r, 1000));
-
-            // Insert Cassandra
-            const t1 = performance.now();
-            await fetch(`https://localhost:44332/api/cassandra/students/generate/${count}`, { method: 'GET' })
-                .then(res => res.json());
-            const elapsedCas = Math.round(performance.now() - t1);
-            casResults.push(`Insert ${count} bản ghi vào Cassandra: ${elapsedCas} ms`);
-            casTimes.push(elapsedCas);
-            casStats.insert = elapsedCas;
-            updateStatsBox('casStats', casStats, 'Cassandra');
-            showAutoInsertResults([casResults[casResults.length - 1]]);
-            await new Promise(r => setTimeout(r, 1000));
         }
-        alert('Đã hoàn thành 4 kịch bản insert cho cả SQL Server và Cassandra!\n' + [...sqlResults, ...casResults].join('\n'));
+    });
+}
 
-        // Lưu lại dữ liệu hiệu suất để vẽ biểu đồ
-        window.autoInsertPerfData = {
-            labels: insertCounts.map(c => c.toLocaleString()),
-            sql: sqlTimes,
-            cas: casTimes
-        };
-        // Hiện tab biểu đồ ngay sau khi chạy xong
-        document.getElementById('chartTab').style.display = 'block';
-        renderPerfChartAutoInsert();
-    };
-
-    function showAutoInsertResults(results) {
-        let box = document.getElementById('autoInsertStats');
-        if (!box) return;
-        box.style.display = 'block';
-        box.innerHTML += results.map(r => `<p>${r}</p>`).join('');
-    }
-
-    function renderPerfChartAutoInsert() {
-        const ctx = document.getElementById('perfChart').getContext('2d');
-        const perfData = window.autoInsertPerfData;
-        if (!perfData) return;
-
-        if (perfChart) {
-            perfChart.destroy();
-        }
-        perfChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: perfData.labels,
-                datasets: [
-                    {
-                        label: 'SQL Server',
-                        data: perfData.sql,
-                        backgroundColor: 'rgba(25, 118, 210, 0.7)'
-                    },
-                    {
-                        label: 'Cassandra',
-                        data: perfData.cas,
-                        backgroundColor: 'rgba(255, 193, 7, 0.7)'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'So sánh hiệu suất Insert (ms) theo số lượng bản ghi' }
-                },
-                scales: {
-                    y: { beginAtZero: true, title: { display: true, text: 'Thời gian (ms)' } }
-                }
-            }
-        });
-    }
-
-    window.onload = loadBothTables;
-</script>
-} 
+window.onload = function() {
+    renderCards();
+    renderTable();
+};
+</script> 

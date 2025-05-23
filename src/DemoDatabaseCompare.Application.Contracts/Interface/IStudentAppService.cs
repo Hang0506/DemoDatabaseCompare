@@ -9,5 +9,6 @@ namespace DemoDatabaseCompare.Students
         ValueTask<List<StudentDto>> GetPagedAsync(int page, int pageSize);
         ValueTask<int> GetTotalCountAsync();
         ValueTask InsertManyAsync(List<StudentDto> inputs);
+        ValueTask ClearAllAsync();
     }
 }

@@ -10,5 +10,6 @@ namespace DemoDatabaseCompare.Students
         Task InsertManyAsync(List<Student> students);
         ValueTask<int> GetTotalCountAsync();
         Task<List<Student>> GetPagedListAsync(int page, int pageSize);
+        Task ClearAllAsync();
     }
 } 

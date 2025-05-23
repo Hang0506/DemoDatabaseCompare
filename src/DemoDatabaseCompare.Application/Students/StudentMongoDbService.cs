@@ -30,5 +30,10 @@ namespace DemoDatabaseCompare.Students
         {
             await _collection.InsertManyAsync(inputs);
         }
+
+        public async ValueTask ClearAllAsync()
+        {
+            await _collection.DeleteManyAsync(_ => true);
+        }
     }
 } 

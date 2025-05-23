@@ -8,5 +8,6 @@ namespace DemoDatabaseCompare.Students
     {
         ValueTask<List<StudentMongoDto>> GetPagedAsync(int page, int pageSize);
         ValueTask InsertManyAsync(List<StudentMongoDto> inputs);
+        ValueTask ClearAllAsync();
     }
 } 

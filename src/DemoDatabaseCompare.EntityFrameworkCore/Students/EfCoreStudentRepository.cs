@@ -62,6 +62,10 @@ namespace DemoDatabaseCompare.Students
                 .Take(pageSize)
                 .ToListAsync();
         }
-
+        public async Task ClearAllAsync()
+        {
+            var dbContext = await GetDbContextAsync();
+            await dbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE  dbo.AppStudents;");
+        }
     }
 }

@@ -6,13 +6,14 @@ using Volo.Abp.Application.Services;
 using Microsoft.Extensions.Configuration;
 using Cassandra;
 using System.Linq;
+using System.Threading;
 
 namespace DemoDatabaseCompare.Students
 {
     public class StudentScyllaService : ApplicationService, IStudentScyllaService
     {
         private readonly ISession _session;
-
+        private PreparedStatement _preparedInsert;
         public StudentScyllaService(IConfiguration config)
         {
             var cluster = Cluster.Builder()
@@ -38,17 +39,62 @@ namespace DemoDatabaseCompare.Students
             return all;
         }
 
-        public async ValueTask InsertManyAsync(List<StudentScyllaDto> inputs)
+        private async Task EnsurePreparedAsync()
         {
-            var batch = new BatchStatement();
-            foreach (var student in inputs)
+            if (_preparedInsert == null)
             {
-                var query = "INSERT INTO students (studentid, firstname, lastname, dateofbirth, grade, address) VALUES (?, ?, ?, ?, ?, ?)";
-                batch.Add(new SimpleStatement(query,
-                    student.StudentId, student.FirstName, student.LastName,
-                    student.DateOfBirth, student.Grade, student.Address));
+                _preparedInsert = await _session.PrepareAsync(
+                    "INSERT INTO students (studentid, firstname, lastname, dateofbirth, grade, address) VALUES (?, ?, ?, ?, ?, ?)");
             }
-            await _session.ExecuteAsync(batch);
+        }
+
+        public async ValueTask InsertManyAsync(List<StudentScyllaDto> students)
+        {
+            const int batchSize = 50; // thử nghiệm với 50, có thể tăng/giảm tùy cluster
+            const int maxConcurrency = 10; // số lượng batch chạy song song, thử nghiệm với 10
+
+            await EnsurePreparedAsync();
+
+            using var throttler = new SemaphoreSlim(maxConcurrency);
+
+            var tasks = new List<Task>();
+
+            foreach (var chunk in students.Chunk(batchSize))
+            {
+                await throttler.WaitAsync();
+
+                tasks.Add(Task.Run(async () =>
+                {
+                    try
+                    {
+                        var writeTasks = chunk.Select(student =>
+                        {
+                            var bound = _preparedInsert.Bind(
+                                student.StudentId,
+                                student.FirstName,
+                                student.LastName,
+                                student.DateOfBirth,
+                                student.Grade,
+                                student.Address);
+                            return _session.ExecuteAsync(bound);
+                        });
+
+                        await Task.WhenAll(writeTasks);
+                    }
+                    finally
+                    {
+                        throttler.Release();
+                    }
+                }));
+            }
+
+            await Task.WhenAll(tasks);
+        }
+
+        public async ValueTask ClearAllAsync()
+        {
+            var cql = "TRUNCATE students";
+            await _session.ExecuteAsync(new SimpleStatement(cql));
         }
     }
 } 

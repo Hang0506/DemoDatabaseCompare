@@ -45,5 +45,11 @@ namespace DemoCompare.Cassandra.Controllers
             var result = await _studentService.GetPagedAsync(page, pageSize);
             return Ok(result);
         }
+        [HttpDelete("clear")]
+        public async ValueTask<IActionResult> Clear()
+        {
+            await _studentService.ClearAllAsync();
+            return Ok(new { Success = true });
+        }
     }
 } 

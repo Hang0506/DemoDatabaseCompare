@@ -49,5 +49,10 @@ namespace DemoDatabaseCompare.Students
 
             await _studentRepository.InsertManyAsync(students);
         }
+
+        public async ValueTask ClearAllAsync()
+        {
+            await _studentRepository.ClearAllAsync();
+        }
     }
 }
